@@ -7,13 +7,28 @@ import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.sidesheet.SideSheetDialog;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private RecyclerView recyclerView;
+    private TaskAdapter taskAdapter;
+    private List<Task> taskList;
+
+    private FirebaseFirestore firestore;
+    private FirebaseAuth auth;
+    private FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,10 +42,22 @@ public class MainActivity extends AppCompatActivity {
         menu.setOnClickListener(view -> openSideSheet());
         add.setOnClickListener(view -> GoToAdd());
 
+        recyclerView = findViewById(R.id.recyclerViewTasks);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        taskList = new ArrayList<>();
+        taskAdapter = new TaskAdapter(taskList);
+        recyclerView.setAdapter(taskAdapter);
+
+        firestore = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
+
+               loadTasks();
     }
 
     private void GoToAdd() {
-        Intent intent = new Intent(MainActivity.this,AddTaskActivity.class);
+        Intent intent = new Intent(MainActivity.this, AddTaskActivity.class);
         startActivity(intent);
     }
 
@@ -41,4 +68,33 @@ public class MainActivity extends AppCompatActivity {
         sideSheetDialog.setSheetEdge(Gravity.START);
         sideSheetDialog.show();
     }
+
+    private void loadTasks() {
+        if (currentUser == null) return;
+
+        CollectionReference taskRef = firestore.collection("users")
+                .document(currentUser.getUid())
+                .collection("Tasks");
+
+        taskRef.addSnapshotListener((value, error) -> {
+            if (error != null) {
+                return;
+            }
+
+            taskList.clear();
+
+            if (value != null) {
+                for (QueryDocumentSnapshot doc : value) {
+                    Task task = doc.toObject(Task.class);
+                    task.setId(doc.getId());
+
+                    if (!task.isArchived()) {
+                        taskList.add(task);
+                    }
+                }
+                taskAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
 }
