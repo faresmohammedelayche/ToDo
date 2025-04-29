@@ -3,25 +3,14 @@ package com.example.todo;
 public class Task {
     private String title;
     private String content;
-
     private boolean isCompleted;
     private boolean isArchived;
-
     private String id;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-
 
     public Task() {}
 
-    public Task(String title, String content, boolean isCompleted, boolean isArchived) {
+    public Task(String title, String content, String id, boolean isCompleted, boolean isArchived) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.isCompleted = isCompleted;
@@ -39,4 +28,7 @@ public class Task {
 
     public boolean isArchived() { return isArchived; }
     public void setArchived(boolean archived) { isArchived = archived; }
+
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 }

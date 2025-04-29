@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.ImageView;
+import android.widget.TimePicker;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -67,6 +68,13 @@ public class MainActivity extends AppCompatActivity {
         sideSheetDialog.setCanceledOnTouchOutside(true);
         sideSheetDialog.setSheetEdge(Gravity.START);
         sideSheetDialog.show();
+
+        sideSheetDialog.findViewById(R.id.archive).setOnClickListener(view -> goToArchive());
+    }
+
+    private void goToArchive() {
+        Intent intent = new Intent(MainActivity.this,ArchiveActivity.class);
+        startActivity(intent);
     }
 
     private void loadTasks() {

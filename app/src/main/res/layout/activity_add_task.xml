@@ -34,8 +34,8 @@
 
     <EditText
         android:id="@+id/content"
-        android:layout_width="403dp"
-        android:layout_height="323dp"
+        android:layout_width="417dp"
+        android:layout_height="119dp"
         android:layout_marginTop="41dp"
         android:ems="10"
         android:gravity="start|top"
@@ -45,38 +45,46 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_item" />
 
-    <EditText
-        android:id="@+id/editTextDate"
-        android:layout_width="280dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="add date"
-        android:inputType="date"
+    <TimePicker
+        android:id="@+id/timePicker"
+        android:layout_width="331dp"
+        android:layout_height="99dp"
+        android:layout_marginTop="12dp"
+        android:timePickerMode="spinner"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/content" />
-
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="121dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="8dp"
-        android:contentDescription="Date"
-        android:hint="date"
-        android:text="Date"
-        android:textAlignment="center"
-        android:textSize="34sp"
+        app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/content" />
 
-    <ImageView
-        android:id="@+id/save"
-        android:layout_width="54dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+    <DatePicker
+        android:id="@+id/datePicker"
+        android:layout_width="329dp"
+        android:layout_height="261dp"
+        android:layout_marginTop="11dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextDate"
-        app:srcCompat="@drawable/save" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timePicker" />
+
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="#E91E63"
+        android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btn_ignore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="#E91E63"
+        android:text="Ignore"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
