@@ -31,7 +31,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Get context from parent view
         context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(R.layout.item, parent, false);
         return new TaskViewHolder(view);
@@ -52,14 +51,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         TextView title;
         EditText content;
         CheckBox checkboxCompleted;
-        ImageView imageView;
+        ImageView addCategory;
+        ImageView addArchive;
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title_item);
             content = itemView.findViewById(R.id.description_item);
             checkboxCompleted = itemView.findViewById(R.id.checkboxCompleted);
-            imageView = itemView.findViewById(R.id.item_menu);
+            addCategory = itemView.findViewById(R.id.add_category);
+            addArchive = itemView.findViewById(R.id.add_archive);
         }
 
         public void bind(Task task) {
@@ -67,12 +68,21 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             content.setText(task.getContent());
             checkboxCompleted.setChecked(task.isCompleted());
 
+            // تجنب تكرار المستمع عند إعادة تدوير العنصر
             checkboxCompleted.setOnCheckedChangeListener(null);
             checkboxCompleted.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                updateTaskStatus(task, isChecked);
+                updateTaskField(task, "isCompleted", isChecked);
             });
 
-            // Set click listener to edit the task
+            addCategory.setOnClickListener(v -> {
+                updateTaskField(task, "isCategorized", true);
+                // يمكن إضافة Intent لفتح صفحة اختيار التصنيف
+            });
+
+            addArchive.setOnClickListener(v -> {
+                updateTaskField(task, "isArchived", true);
+            });
+
             itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, EditTaskActivity.class);
                 intent.putExtra("taskId", task.getId());
@@ -84,17 +94,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             });
         }
 
-        private void updateTaskStatus(Task task, boolean isCompleted) {
+        private void updateTaskField(Task task, String fieldName, Object value) {
             FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-            FirebaseAuth auth = FirebaseAuth.getInstance();
-            FirebaseUser currentUser = auth.getCurrentUser();
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
             if (currentUser != null) {
                 firestore.collection("users")
                         .document(currentUser.getUid())
                         .collection("Tasks")
                         .document(task.getId())
-                        .update("isCompleted", isCompleted);
+                        .update(fieldName, value);
             }
         }
     }
